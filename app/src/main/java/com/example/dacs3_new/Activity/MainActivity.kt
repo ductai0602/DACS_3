@@ -62,47 +62,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.dacs3_new.Model.CategoryModel
 import com.example.dacs3_new.Model.FoodModel
 import com.example.dacs3_new.R
 import com.example.dacs3_new.ViewModel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MainScreen(
-                onCartClick = {
-                    startActivity(Intent(this, CartActivity::class.java))
-                },
-                onHomeClick = {
-                    startActivity(Intent(this, MainActivity::class.java))
-                },
-                onFoodClick = { food ->
-                    val intent = Intent(this, ShowItemActivity::class.java)
-                    intent.putExtra("object", food)
-                    startActivity(intent)
-                }
+                rememberNavController()
             )
         }
     }
 }
 
 @Composable
-@Preview
 fun MainScreen(
-    onCartClick: () -> Unit = {},
-    onHomeClick: () -> Unit = {},
-    onFoodClick: (FoodModel) -> Unit = {}
+    navController: NavHostController
 ){
     val scaffoldState = rememberScaffoldState()
+    val context = LocalContext.current
+
     Scaffold(
         bottomBar = {
             MyBottomBar()
         }, floatingActionButton = {
             FloatingActionButton(
-                onClick = {onCartClick()},
+                onClick = {
+                    val intent = Intent(context, CartActivity::class.java)
+                    context.startActivity(intent)
+                },
                 contentColor = Color.White,
                 backgroundColor = colorResource(id = R.color.orange)
             ) {
@@ -122,9 +119,14 @@ fun MainScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(paddingValues = paddingValues)
             ) {
-                val viewModel = MainViewModel()
+                val viewModel: MainViewModel = viewModel()
                 val categories = remember { mutableStateListOf<CategoryModel>() }
                 val popular = remember { mutableStateListOf<FoodModel>() }
+                val onFoodClick: (FoodModel) -> Unit = { food ->
+                    val intent = Intent(context, ShowItemActivity::class.java)
+                    intent.putExtra("object", food)
+                    context.startActivity(intent)
+                }
 
                 var showCategoryLoading by remember { mutableStateOf(true) }
                 var showPopularLoading by remember { mutableStateOf(true) }
@@ -152,7 +154,7 @@ fun MainScreen(
                 Banner()
                 CategorySection(categories, showCategoryLoading)
                 Spacer(modifier = Modifier.height(16.dp))
-                PopularSection(onFoodClick, popular, showPopularLoading)
+                PopularSection(onFoodClick = onFoodClick, popular, showPopularLoading)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -270,7 +272,10 @@ fun FoodItem(food: FoodModel, onFoodClick: (FoodModel) -> Unit) {
                 .padding(horizontal = 10.dp, vertical = 3.dp)
                 .clickable { onFoodClick(food) }
                 .constrainAs(addButton){
-                    //Them sau
+                    top.linkTo(fee.bottom, margin = 8.dp)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
                 }
         )
     }
@@ -353,6 +358,8 @@ fun NameAndProfile() {
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
     ) {
+        val user = FirebaseAuth.getInstance().currentUser
+        val displayName = user?.displayName ?: "Người dùng"
         val (name, order, img) = createRefs()
         Image(
             painter = painterResource(id = R.drawable.profile), contentDescription = null,
@@ -365,7 +372,7 @@ fun NameAndProfile() {
                 .clickable {  }
         )
         Text(
-            text = "Hi Rechard",
+            text = "Xin chào, $displayName",
             color = colorResource(id = R.color.orange),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,

@@ -1,5 +1,6 @@
 package com.example.dacs3_new.Activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -81,6 +83,7 @@ class ShowItemActivity : BaseActivity() {
                 .background(Color.White)
         ) {
             val (scrollView, addToCartButton) = createRefs()
+            val context = LocalContext.current
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -171,6 +174,8 @@ class ShowItemActivity : BaseActivity() {
                     .clickable {
                         food.numberInCart = numberOrder
                         onAddToCartClick(food)
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
                     }
                     .constrainAs(addToCartButton){
                         bottom.linkTo(parent.bottom)

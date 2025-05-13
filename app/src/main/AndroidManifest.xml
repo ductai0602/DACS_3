@@ -22,7 +22,7 @@
             android:name=".Activity.BaseActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.IntroActivity"
+            android:name=".Activity.Login.MainLogin"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +32,7 @@
         </activity>
         <activity
             android:name=".Activity.MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.DACS3_NEW">
         </activity>

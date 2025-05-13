@@ -74,4 +74,13 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.1")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
     implementation("androidx.compose.foundation:foundation:1.5.0")
+
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.firebase:firebase-auth:22.1.1")
 }

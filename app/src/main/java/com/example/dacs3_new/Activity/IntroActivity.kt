@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,33 +27,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.dacs3_new.Activity.Login.Components.DontHaveAcc
 import com.example.dacs3_new.R
 
 class IntroActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent{
-            IntroScreenPreview(onGetStartedClick = {
-                startActivity(Intent(this, MainActivity::class.java))
-            })
+            IntroScreen(rememberNavController())
         }
     }
 }
 
 @Composable
-fun IntroScreenPreview(onGetStartedClick: () -> Unit){
-    IntroScreen(onGetStartedClick = onGetStartedClick)
-}
-
-@Composable
-fun IntroScreen(onGetStartedClick: () -> Unit) {
+fun IntroScreen(
+    navController: NavHostController
+) {
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White)
     ) {
         ConstraintLayout(
             modifier = Modifier.background(Color.White)
         ) {
-            val (backgroundImg, logoImg, titleTxt, subtitleTxt, buttonBox) = createRefs()
+            val (backgroundImg, logoImg, titleTxt, subtitleTxt, buttonBox, signup) = createRefs()
             Image(
                 painter = painterResource(id = R.drawable.background_intro),
                 contentDescription = null,
@@ -108,7 +107,7 @@ fun IntroScreen(onGetStartedClick: () -> Unit) {
                     }
             )
             GetStartedButton(
-                onClick = onGetStartedClick,
+                onClick = {navController.navigate("login")},
                 modifier = Modifier
                     .padding(top = 48.dp)
                     .constrainAs(buttonBox){
